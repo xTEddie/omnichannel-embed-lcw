@@ -60,6 +60,14 @@ class MainActivity : AppCompatActivity() {
                             application.assets.open("jquery-3.4.1.min.js")
                         )
                     }
+
+                    if (request?.url?.lastPathSegment == "SDK.min.js" && request?.url?.toString()!!.contains("ams") && request?.url?.toString()!!.contains("0.1.0-main.ef0152f")) { // 5.2 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("ams/0.1.0-main.ef0152f/SDK.min.js")
+                        )
+                    }
                 } catch (e: Exception) {
                     return super.shouldInterceptRequest(view, request)
                 }
