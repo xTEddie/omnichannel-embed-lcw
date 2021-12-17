@@ -45,6 +45,14 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
+                    if (request?.url?.lastPathSegment == "chat-adapter-0.0.35-beta.1.js") { // 119 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("chat-adapter-0.0.35-beta.1.js")
+                        )
+                    }
+
                     if (request?.url?.lastPathSegment == "botframework-webchat-adapter-ic3.production.min.js" && request?.url?.toString()!!.contains("0.1.0-master.2dba07b")) { // 118 kB
                         return WebResourceResponse(
                             "text/javascript",
