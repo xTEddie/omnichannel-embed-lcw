@@ -45,6 +45,14 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
+                    if (request?.url?.lastPathSegment == "botframework-webchat-adapter-ic3.production.min.js" && request?.url?.toString()!!.contains("0.1.0-master.2dba07b")) { // 118 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("webchat-ic3adapter/0.1.0-master.2dba07b/botframework-webchat-adapter-ic3.production.min.js")
+                        )
+                    }
+
                     if (request?.url?.lastPathSegment == "jquery-3.4.1.min.js") { // 33.2 kB
                         return WebResourceResponse(
                             "text/javascript",
