@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.webkit.*
+import java.io.File
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
@@ -107,6 +109,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        wv.loadUrl("file:///android_asset/index.html")
+//        var url = URL(OmnichannelConfig.config["bootstrapper"])
+//        val baseUrl = "${url.protocol}://${url.host}"
+//
+//        val data = application.assets.open("index.html").bufferedReader().use {
+//            it.readText()
+//        };
+
+//        wv.loadDataWithBaseURL(baseUrl, data, "text/html", null, baseUrl)
+
+        val queryParams = "orgId=${OmnichannelConfig.config["orgId"]}&orgUrl=${OmnichannelConfig.config["orgUrl"]}&appId=${OmnichannelConfig.config["appId"]}&hideChatbutton=${OmnichannelConfig.config["hideChatbutton"]}&renderMobile=${OmnichannelConfig.config["renderMobile"]}&src=${OmnichannelConfig.config["src"]}"
+        wv.loadUrl("${OmnichannelConfig.config["webPage"]}?${queryParams}")
     }
 }

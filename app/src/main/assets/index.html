@@ -22,12 +22,20 @@
         <div id='elapsed-time'></div>
     </body>
     <script type="text/javascript">
-        const omnichannelConfig = {
-			orgUrl: 'https://omnichannel-crm.omnichannelengagementhub.com',
-			orgId: 'd367c413-e0b9-408b-ae1c-382499b369ae',
-			widgetId: '3a352b95-5d67-4e47-af28-eca029b03928',
-			src: 'https://oc-cdn-ocprod.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js'
-		}
+        const urlParams = new URLSearchParams(location.search);
+        const orgId = urlParams.get("orgId");
+        const orgUrl = urlParams.get("orgUrl");
+        const appId = urlParams.get("appId");
+        const src = urlParams.get("src");
+
+		const omnichannelConfig = {
+		    orgUrl,
+		    orgId,
+		    appId,
+		    src
+        }
+
+        console.log(omnichannelConfig);
 
 		const states = {
 			ready: false
@@ -38,7 +46,7 @@
 			scriptElement.src = omnichannelConfig.src;
 			scriptElement.setAttribute('data-org-url', omnichannelConfig.orgUrl);
 			scriptElement.setAttribute('data-org-id', omnichannelConfig.orgId);
-			scriptElement.setAttribute('data-app-id', omnichannelConfig.widgetId);
+			scriptElement.setAttribute('data-app-id', omnichannelConfig.appId);
 			scriptElement.setAttribute('data-lcw-version', 'prod');
 			scriptElement.setAttribute('id', 'Microsoft_Omnichannel_LCWidget');
 
