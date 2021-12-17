@@ -37,6 +37,14 @@ class MainActivity : AppCompatActivity() {
                 request: WebResourceRequest
             ): WebResourceResponse? {
                 try {
+                    if (request?.url?.lastPathSegment == "webchat-es5.js" && request?.url?.toString()!!.contains("4.9.2")) { // 766 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("botframework-webchat/4.9.2/webchat-es5.js")
+                        )
+                    }
+
                     if (request?.url?.lastPathSegment == "jquery-3.4.1.min.js") { // 33.2 kB
                         return WebResourceResponse(
                             "text/javascript",
