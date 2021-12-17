@@ -84,6 +84,14 @@ class MainActivity : AppCompatActivity() {
                             application.assets.open("ams/0.1.0-main.ef0152f/SDK.min.js")
                         )
                     }
+
+                    if (request?.url?.lastPathSegment == "appinsights.js") { // 3.0 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("appinsights.js")
+                        )
+                    }
                 } catch (e: Exception) {
                     return super.shouldInterceptRequest(view, request)
                 }
