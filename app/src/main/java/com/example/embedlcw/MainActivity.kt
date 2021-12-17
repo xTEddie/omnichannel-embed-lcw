@@ -77,6 +77,14 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
+                    if (request?.url?.lastPathSegment == "purify.min.js") { // 7.2 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("purify.min.js")
+                        )
+                    }
+
                     if (request?.url?.lastPathSegment == "SDK.min.js" && request?.url?.toString()!!.contains("ams") && request?.url?.toString()!!.contains("0.1.0-main.ef0152f")) { // 5.2 kB
                         return WebResourceResponse(
                             "text/javascript",
