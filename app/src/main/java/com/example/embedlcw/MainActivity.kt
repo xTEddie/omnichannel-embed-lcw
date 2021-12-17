@@ -61,6 +61,14 @@ class MainActivity : AppCompatActivity() {
                         )
                     }
 
+                    if (request?.url?.lastPathSegment == "SDK.min.js" && request?.url?.toString()!!.contains("ocsdk") && request?.url?.toString()!!.contains("0.2.1-main.d3114ea")) { // 18.4 kB
+                        return WebResourceResponse(
+                            "text/javascript",
+                            "gzip",
+                            application.assets.open("ocsdk/0.2.1-main.d3114ea/SDK.min.js")
+                        )
+                    }
+
                     if (request?.url?.lastPathSegment == "SDK.min.js" && request?.url?.toString()!!.contains("ams") && request?.url?.toString()!!.contains("0.1.0-main.ef0152f")) { // 5.2 kB
                         return WebResourceResponse(
                             "text/javascript",
