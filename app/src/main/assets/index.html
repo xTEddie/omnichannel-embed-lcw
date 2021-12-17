@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <style>
+			@property --num {
+			  syntax: "<integer>";
+			  initial-value: 0;
+			  inherits: false;
+			}
+
+			div {
+			  transition: --num 5s;
+			  counter-set: num var(--num);
+			  font: 700 32px system-ui;
+			}
+
+			body {
+			  margin: 2rem;
+			}
+		</style>
+    </head>
+    <body>
+        <div id='elapsed-time'></div>
+    </body>
+    <script type="text/javascript">
+        const omnichannelConfig = {
+			orgUrl: 'https://omnichannel-crm.omnichannelengagementhub.com',
+			orgId: 'd367c413-e0b9-408b-ae1c-382499b369ae',
+			widgetId: '3a352b95-5d67-4e47-af28-eca029b03928',
+			src: 'https://oc-cdn-ocprod.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js'
+		}
+
+		const states = {
+			ready: false
+		}
+
+		const createChatWidget = (omnichannelConfig) => {
+			const scriptElement = document.createElement('script');
+			scriptElement.src = omnichannelConfig.src;
+			scriptElement.setAttribute('data-org-url', omnichannelConfig.orgUrl);
+			scriptElement.setAttribute('data-org-id', omnichannelConfig.orgId);
+			scriptElement.setAttribute('data-app-id', omnichannelConfig.widgetId);
+			scriptElement.setAttribute('data-lcw-version', 'prod');
+			scriptElement.setAttribute('id', 'Microsoft_Omnichannel_LCWidget');
+
+			document.head.appendChild(scriptElement);
+		}
+
+		(() => {
+			window.addEventListener('lcw:ready', () => {
+				states.ready = true;
+			});
+
+			createChatWidget(omnichannelConfig);
+
+			const startTime = new Date().getTime();
+
+			const updateElapsedTime = () => {
+				const currentTime = new Date().getTime();
+				const elapsedTime = currentTime - startTime;
+				document.querySelector("div#elapsed-time").innerHTML = `Your chat widget loaded in ${elapsedTime / 1000} second(s)`;
+
+				// Stop timer on chat widget loaded
+				if (!states.ready) {
+					setTimeout(updateElapsedTime, 0);
+				}
+			};
+
+			setTimeout(updateElapsedTime, 500);
+		})();
+    </script>
+</html>
