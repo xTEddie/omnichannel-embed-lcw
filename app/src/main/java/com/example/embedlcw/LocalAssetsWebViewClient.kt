@@ -11,6 +11,8 @@ class LocalAssetsWebViewClient() : WebViewClient() {
 
     /**
      * Intercepts resources and load them from local assets.
+     *
+     * Use at your own risk: Local assets may not be in sync with the production assets.
      */
     override fun shouldInterceptRequest(
         view: WebView,
