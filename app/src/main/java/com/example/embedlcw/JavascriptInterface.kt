@@ -64,7 +64,7 @@ class JavascriptInterface {
      * Get Base 64 string from Blob URL in Android layer.
      *
      * 1. Download Blob URL as Blob object
-     * 2. Conversation Blob object to Base64 data
+     * 2. Convert Blob object to Base64 data
      * 3. Pass Base64 data to Android layer for processing
      */
     fun getBase64StringFromBlobUrl(blobUrl: String): String {

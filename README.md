@@ -43,3 +43,11 @@ It should look similar to this:
         "renderMobile" to "false"
     )
 ```
+
+## FAQ
+
+### Q: Download attachment does not work
+
+A: Additional native implementation is required to support attachment download.
+
+Attachments sent/received are stored as `blob URL`. It is a known issue that WebViewClient can't load `blob URLs`. A work around would be to convert the `blob URL` to a `Blob`, then to `Base64` data on the **web side**. The **native side** will decode the `Base64` data, write the data to a file based on the MIME type specified in the prefix of the `Base64` data.
