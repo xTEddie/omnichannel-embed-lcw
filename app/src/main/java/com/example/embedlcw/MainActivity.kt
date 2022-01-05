@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.webkit.DownloadListener
 import android.webkit.WebView
+import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +24,8 @@ class MainActivity : AppCompatActivity() {
 
         // Load local .html with baseUrl set to LCW production domain since attachment downloads does not work cross-origin
         val queryParams = "orgId=${OmnichannelConfig.config["orgId"]}&orgUrl=${OmnichannelConfig.config["orgUrl"]}&appId=${OmnichannelConfig.config["appId"]}&hideChatbutton=${OmnichannelConfig.config["hideChatbutton"]}&renderMobile=${OmnichannelConfig.config["renderMobile"]}&src=${OmnichannelConfig.config["src"]}"
-        val baseUrl = "https://oc-cdn-ocprod.azureedge.net?${queryParams}"
+        var url = URL(OmnichannelConfig.config["src"])
+        val baseUrl = "${url.protocol}://${url.host}?${queryParams}"
         val data = application.assets.open("index.html").bufferedReader().use {
             it.readText()
         };
