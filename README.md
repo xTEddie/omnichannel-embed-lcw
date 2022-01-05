@@ -30,7 +30,7 @@ It should look similar to this:
 </script>
 ```
 
-### 3. **Add** your chat widget config to [OmnichannelConfig.kt](app\src\main\java\com\example\embedlcw\OmnichannelConfig.kt)
+### 3. **Add** your chat widget config to [OmnichannelConfig.kt](app/src/main/java/com/example/embedlcw/OmnichannelConfig.kt)
 
 ```kotlin
     val config = mapOf(
