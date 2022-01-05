@@ -123,20 +123,33 @@ Steps to follow:
         }
     ```
 
-2. Load WebView with `CDN URL` as `BaseURL`
+1. Add permissions in `AndroidManifest.xml`
+    ```xml
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    ```
+
+1. Request permissions dynamically
+
+    ```kotlin
+    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED);
+    ```
+
+1. Load WebView with `CDN URL` as `BaseURL`
 
     ```kotlin
     wv.loadDataWithBaseURL(baseUrl, data, "text/html", null, baseUrl)
     ```
 
-3. Inject Kotlin object `JavascriptInterface` into WebView with `Android` as global variable in the DOM
+1. Inject Kotlin object `JavascriptInterface` into WebView with `Android` as global variable in the DOM
 
     ```kotlin
     val javascriptInterface = JavascriptInterface(applicationContext)
     wv.addJavascriptInterface(javascriptInterface, "Android")
     ```
 
-4. Subscribe to notification when content cannot be handled by WebView and should be handled in Native layer
+1. Subscribe to notification when content cannot be handled by WebView and should be handled in Native layer
 
     ```kotlin
     wv.setDownloadListener(DownloadListener { url, _, _, _, _ ->
