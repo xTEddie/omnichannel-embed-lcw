@@ -50,4 +50,6 @@ It should look similar to this:
 
 A: Additional native implementation is required to support attachment download.
 
-Attachments sent/received are stored as `blob URL`. It is a known issue that WebViewClient can't load `blob URLs`. A work around would be to convert the `blob URL` to a `Blob`, then to `Base64` data on the **web side**. The **native side** will decode the `Base64` data, write the data to a file based on the MIME type specified in the prefix of the `Base64` data.
+Attachments sent/received are stored as `blob URL`. It is a known issue that WebViewClient can't load `blob URLs` in the Android community (reference [here](https://stackoverflow.com/questions/48892390/download-blob-file-from-website-inside-android-webviewclient/48954970#48954970)). A work around would be to convert the `blob URL` to a `Blob`, then to `Base64` data on the **web side**. The **native side** will decode the `Base64` data, write the data to a file based on the MIME type specified in the prefix of the `Base64` data.
+
+It should be noted the domain where all `blob URLs` attachments and the `CDN URL` where the LCW is hosted are the same. It's important to ensure same-origin policy on downloading attachments or it won't work for security reasons.
