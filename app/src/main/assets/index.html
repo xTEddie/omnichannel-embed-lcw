@@ -53,27 +53,34 @@
 			document.head.appendChild(scriptElement);
 		}
 
-		(() => {
-			window.addEventListener('lcw:ready', () => {
-				states.ready = true;
-			});
+        const loadChatWidget = async () => {
+            return new Promise((resolve, reject) => {
+                window.addEventListener('lcw:ready', () => {
+                    states.ready = true;
+                });
 
-			createChatWidget(omnichannelConfig);
+                createChatWidget(omnichannelConfig);
 
-			const startTime = new Date().getTime();
+                const startTime = new Date().getTime();
 
-			const updateElapsedTime = () => {
-				const currentTime = new Date().getTime();
-				const elapsedTime = currentTime - startTime;
-				document.querySelector("div#elapsed-time").innerHTML = `Your chat widget loaded in ${elapsedTime / 1000} second(s)`;
+                const updateElapsedTime = () => {
+                    const currentTime = new Date().getTime();
+                    const elapsedTime = currentTime - startTime;
+                    document.querySelector("div#elapsed-time").innerHTML = `Your chat widget loaded in ${elapsedTime / 1000} second(s)`;
 
-				// Stop timer on chat widget loaded
-				if (!states.ready) {
-					setTimeout(updateElapsedTime, 0);
-				}
-			};
+                    // Stop timer on chat widget loaded
+                    if (!states.ready) {
+                        setTimeout(updateElapsedTime, 0);
+                        return resolve();
+                    }
+                };
 
-			setTimeout(updateElapsedTime, 500);
+                setTimeout(updateElapsedTime, 500);
+            });
+        }
+
+		(async () => {
+            await loadChatWidget();
 		})();
     </script>
 </html>
