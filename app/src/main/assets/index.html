@@ -112,6 +112,20 @@
 
 			const table = document.createElement('table');
 
+			const populateHeaders = () => {
+				const headers = ['initiatorType', 'duration (ms)', 'name'];
+				const thr = document.createElement('tr');
+
+				for (const header of headers) {
+					const th = document.createElement('th');
+					const text = document.createTextNode(header);
+					th.appendChild(text);
+					thr.appendChild(th)
+				}
+
+				table.appendChild(thr);
+			}
+
 			const populateEntry = (entry) => {
 				const {initiatorType, duration, name} = entry;
 
@@ -146,6 +160,7 @@
 				}
 			}
 
+			populateHeaders();
 			populateEntries(window);
 
 			try {
