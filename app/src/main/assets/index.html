@@ -16,10 +16,33 @@
 			body {
 			  margin: 2rem;
 			}
+
+			table {
+			    font-size: 0.5em;
+			    width: 60%;
+			}
+
+			td, th {
+				border: 1px solid #ddd;
+				padding: 8px;
+			}
+
+			#actions {
+				margin: 10px 0;
+			}
+
+			#inspect-resources-results {
+				font-size: 1em;
+				max-height: 50vh;
+			}
 		</style>
     </head>
     <body>
         <div id='elapsed-time'></div>
+        <section id='actions'>
+            <button id='inspect-resources-button'> Inspect Resources </button>
+        </section>
+        <div id='inspect-resources-results'></div>
     </body>
     <script type="text/javascript">
         const urlParams = new URLSearchParams(location.search);
@@ -54,16 +77,19 @@
 		}
 
         const loadChatWidget = async () => {
+            console.log('[loadChatWidget]');
             return new Promise((resolve, reject) => {
                 window.addEventListener('lcw:ready', () => {
+                    console.log('[loadChatWidget] loaded!');
                     states.ready = true;
+                    return resolve();
                 });
 
                 createChatWidget(omnichannelConfig);
 
                 const startTime = new Date().getTime();
 
-                const updateElapsedTime = () => {
+                const updateElapsedTime = async () => {
                     const currentTime = new Date().getTime();
                     const elapsedTime = currentTime - startTime;
                     document.querySelector("div#elapsed-time").innerHTML = `Your chat widget loaded in ${elapsedTime / 1000} second(s)`;
@@ -71,7 +97,7 @@
                     // Stop timer on chat widget loaded
                     if (!states.ready) {
                         setTimeout(updateElapsedTime, 0);
-                        return resolve();
+                        return;
                     }
                 };
 
@@ -79,8 +105,66 @@
             });
         }
 
+		const inspectResources = async () => {
+		    console.log('[inspectResource]');
+			const existingTable = document.getElementsByTagName('table')[0];
+			existingTable && existingTable.remove();
+
+			const table = document.createElement('table');
+
+			const populateEntry = (entry) => {
+				const {initiatorType, duration, name} = entry;
+
+<!--				console.log({name, duration: parseInt(duration)});-->
+
+				const tr = document.createElement('tr');
+				const td1 = document.createElement('td');
+				const td2 = document.createElement('td');
+				const td3 = document.createElement('td');
+				const text1 = document.createTextNode(initiatorType);
+				const text2 = document.createTextNode(parseInt(duration));
+				const text3 = document.createTextNode(name);
+
+				td1.appendChild(text1);
+				td2.appendChild(text2);
+				td3.appendChild(text3);
+				tr.appendChild(td1);
+				tr.appendChild(td2);
+				tr.appendChild(td3);
+				table.appendChild(tr);
+			}
+
+			const populateEntries = (window) => {
+				const entries = window.performance.getEntries();
+				for (const entry of entries) {
+					const {name, duration} = entry;
+
+					if (!name) continue;
+					if (!name.startsWith('http')) continue;
+
+					populateEntry(entry);
+				}
+			}
+
+			populateEntries(window);
+
+			try {
+				const iframe = document.getElementsByTagName('iframe')[0];
+				populateEntries(iframe.contentWindow.window);
+			} catch (err) {
+				console.error(err.message);
+			}
+
+            const inspectResourcesResultsElement = document.getElementById('inspect-resources-results');
+			inspectResourcesResultsElement.appendChild(table);
+			inspectResourcesResultsElement.style.overflow = 'scroll';
+		}
+
+		document.getElementById('inspect-resources-button').onclick = inspectResources;
+
 		(async () => {
             await loadChatWidget();
+            await inspectResources();
 		})();
     </script>
 </html>
