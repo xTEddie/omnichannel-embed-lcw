@@ -10,11 +10,11 @@
 			div {
 			  transition: --num 5s;
 			  counter-set: num var(--num);
-			  font: 700 32px system-ui;
+			  font: 700 20px system-ui;
 			}
 
 			body {
-			  margin: 2rem;
+			  margin: 1rem 2rem 2rem 2rem;
 			}
 
 			table {
@@ -26,6 +26,11 @@
 				border: 1px solid #ddd;
 				padding: 8px;
 			}
+
+            #internet-speed-test {
+                width: 100%;
+                height: 15vh;
+            }
 
 			#actions {
 				margin: 10px 0;
@@ -63,6 +68,13 @@
 		const states = {
 			ready: false
 		}
+
+        const loadInternetSpeedTest = () => {
+            const iframeElement = document.createElement('iframe');
+            iframeElement.id = 'internet-speed-test';
+            iframeElement.src = "https://fast.com";
+            document.body.prepend(iframeElement);
+        }
 
 		const createChatWidget = (omnichannelConfig) => {
 			const scriptElement = document.createElement('script');
@@ -178,6 +190,7 @@
 		document.getElementById('inspect-resources-button').onclick = inspectResources;
 
 		(async () => {
+		    await loadInternetSpeedTest();
             await loadChatWidget();
             await inspectResources();
 		})();
