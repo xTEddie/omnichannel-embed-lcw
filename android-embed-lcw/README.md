@@ -1,4 +1,4 @@
-# Omnichannel Embed LCW
+# Android Embed LCW
 
 Sample [Android](https://www.android.com/) app to embed [Dynamics 365 Customer Service](https://docs.microsoft.com/en-us/dynamics365/customer-service/help-hub) Live Chat Widget in a [WebView](https://developer.android.com/reference/android/webkit/WebView).
 
