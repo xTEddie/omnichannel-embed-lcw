@@ -158,3 +158,68 @@ Steps to follow:
         }
     })
     ```
+
+### Q: Upload attachment does not work
+
+A: Additional native implementation is required to support attachment download.
+
+By default, WebView does not provide browser-like widgets. So, file-select field for file uploads is not natively supported. However, Android is exposing a method to handle the response when an user presses the "Select File" button: [WebChromeClient.onShowFileChooser()](https://developer.android.com/reference/android/webkit/WebChromeClient.html#onShowFileChooser(android.webkit.WebView,%20android.webkit.ValueCallback%3Candroid.net.Uri[]%3E,%20android.webkit.WebChromeClient.FileChooserParams))
+
+Steps to follow:
+
+1. Override `WebChromeClient`'s `onShowFileChooser()` method to launch a file picker which allows user to choose a file to upload
+
+    ```kotlin
+    wv.webChromeClient = object: WebChromeClient() {
+
+        // Handles HTML forms with 'file' input type on android API 21+
+        override fun onShowFileChooser(
+            webView: WebView?,
+            filePathCallback: ValueCallback<Array<Uri?>?>,
+            fileChooserParams: FileChooserParams
+        ): Boolean {
+
+            if (Build.VERSION.SDK_INT >= 21) {
+                uploadedFileTempPath = filePathCallback // Track the uploaded file temporary path for later use
+                val intent = fileChooserParams.createIntent() // Intent to start file picker
+                try {
+                    startActivityForResult(intent, YOUR_REQUEST_CODE) // Send any request code which represents your 'request' on exiting file picker activity
+                } catch (e: Exception) {
+                    Toast.makeText(
+                        applicationContext,
+                        "Unable to open file chooser",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return false
+                }
+
+                return true
+            }
+
+            return false
+        }
+    }
+    ```
+
+1. Override the `Activity`'s `onActivityResult()` method to catch the file the user selected, then send the data back to the WebView
+
+    ```kotlin
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            if (resultCode == Activity.RESULT_CANCELED) {
+                uploadedFileTempPath?.onReceiveValue(null) // Need to send null value to ensure future attempts workable
+                return
+            }
+
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == YOUR_REQUEST_CODE) {
+                    uploadedFileTempPath?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data)) // Send result back to WebView
+                    uploadedFileTempPath = null
+                }
+            }
+        }
+    }
+    ```
