@@ -1,24 +1,38 @@
 package com.example.embedlcw
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.webkit.DownloadListener
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebView
+import android.widget.Toast
 import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
     var debug = true
+    var uploadedFileTempPath: ValueCallback<Array<Uri?>?>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Request permissions
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED);
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ), PackageManager.PERMISSION_GRANTED
+        );
 
         if (debug) {
             WebView.setWebContentsDebuggingEnabled(debug)
@@ -48,5 +62,54 @@ class MainActivity : AppCompatActivity() {
                 wv.evaluateJavascript(javascriptInterface.getBase64StringFromBlobUrl(url), null)
             }
         })
+
+        wv.webChromeClient = object: WebChromeClient() {
+
+            // Handles HTML forms with 'file' input type on android API 21+
+            override fun onShowFileChooser(
+                webView: WebView?,
+                filePathCallback: ValueCallback<Array<Uri?>?>,
+                fileChooserParams: FileChooserParams
+            ): Boolean {
+
+                if (Build.VERSION.SDK_INT >= 21) {
+                    uploadedFileTempPath = filePathCallback
+                    val intent = fileChooserParams.createIntent()
+                    try {
+                        startActivityForResult(intent, 100) // Send request code for select file
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Unable to open file chooser",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return false
+                    }
+
+                    return true
+                }
+
+                return false
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (Build.VERSION.SDK_INT >= 21) {
+
+            if (resultCode == Activity.RESULT_CANCELED) {
+                uploadedFileTempPath?.onReceiveValue(null) // Need to send null value to ensure future attempts workable
+                return
+            }
+
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == 100) {
+                    uploadedFileTempPath?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
+                    uploadedFileTempPath = null
+                }
+            }
+        }
     }
 }
