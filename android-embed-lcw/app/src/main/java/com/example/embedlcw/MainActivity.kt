@@ -19,6 +19,10 @@ import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
+    object RequestCodes {
+        const val FILE_UPLOAD = 100
+    }
+
     var debug = true
     var uploadedFileTempPath: ValueCallback<Array<Uri?>?>? = null
 
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                     uploadedFileTempPath = filePathCallback
                     val intent = fileChooserParams.createIntent()
                     try {
-                        startActivityForResult(intent, 100) // Send request code for select file
+                        startActivityForResult(intent, RequestCodes.FILE_UPLOAD) // Send request code for select file
                     } catch (e: Exception) {
                         Toast.makeText(
                             applicationContext,
@@ -105,7 +109,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == 100) {
+                if (requestCode == RequestCodes.FILE_UPLOAD) {
                     uploadedFileTempPath?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
                     uploadedFileTempPath = null
                 }
