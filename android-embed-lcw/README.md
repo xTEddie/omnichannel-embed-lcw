@@ -167,6 +167,19 @@ By default, WebView does not provide browser-like widgets. So, file-select field
 
 Steps to follow:
 
+1. Add permissions in `AndroidManifest.xml`
+    ```xml
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    ```
+
+1. Request permissions dynamically
+
+    ```kotlin
+    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), PackageManager.PERMISSION_GRANTED);
+    ```
+
 1. Override `WebChromeClient`'s `onShowFileChooser()` method to launch a file picker which allows user to choose a file to upload
 
     ```kotlin
