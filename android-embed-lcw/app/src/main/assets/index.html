@@ -176,14 +176,22 @@
 
 			const populateEntries = (window) => {
 				const entries = window.performance.getEntries();
+
+				const logs = [];
+
 				for (const entry of entries) {
-					const {name, duration} = entry;
+				    const {initiatorType, duration, name} = entry;
 
 					if (!name) continue;
 					if (!name.startsWith('http')) continue;
 
 					populateEntry(entry);
+
+					logs.push({initiatorType, duration, name});
 				}
+
+                console.log("[NETWORK LOGS]");
+				console.log(JSON.stringify(logs));
 			}
 
 			populateHeaders();
