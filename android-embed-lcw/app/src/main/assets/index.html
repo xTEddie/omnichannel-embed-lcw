@@ -179,6 +179,7 @@
 				const entries = window.performance.getEntries();
 
 				const logs = [];
+                let totalDuration = 0;
 
 				for (const entry of entries) {
 				    const {initiatorType, duration, name} = entry;
@@ -187,12 +188,14 @@
 					if (!name.startsWith('http')) continue;
 
 					populateEntry(entry);
-
 					logs.push({initiatorType, duration, name});
+
+                    totalDuration += duration;
 				}
 
                 console.log("[NETWORK LOGS]");
 				console.log(JSON.stringify(logs));
+                console.log(`[WebResources][Duration] ${totalDuration} ms`);
 			}
 
 			populateHeaders();
