@@ -4,7 +4,9 @@ import android.content.Context
 import android.os.Environment
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.webkit.JavascriptInterface
+import android.webkit.WebView
 import android.widget.Toast
 import java.io.File
 import java.io.FileOutputStream
@@ -15,14 +17,26 @@ import java.io.FileOutputStream
 
 class JavascriptInterface {
     var context: Context;
+    var wv: WebView
 
-    constructor(context: Context) {
+    constructor(context: Context, wv: WebView) {
         this.context = context;
+        this.wv = wv;
     }
 
     @JavascriptInterface
     fun showToast(toast: String?) {
         Toast.makeText(this.context, toast, Toast.LENGTH_SHORT).show()
+    }
+
+    @JavascriptInterface
+    fun onLcwReady() {
+        Log.i("JavascriptInterface", "onLcwReady");
+
+        // Run on UI thread
+        wv.post {
+            wv.visibility = View.VISIBLE
+        }
     }
 
     /**

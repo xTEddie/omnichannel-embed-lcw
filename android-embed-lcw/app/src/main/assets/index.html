@@ -100,6 +100,7 @@
             return new Promise((resolve, reject) => {
                 window.addEventListener('lcw:ready', () => {
                     console.log('[loadChatWidget] loaded!');
+                    Android.onLcwReady();
                     states.ready = true;
                     return resolve();
                 });

@@ -10,10 +10,8 @@ import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.webkit.DownloadListener
-import android.webkit.ValueCallback
-import android.webkit.WebChromeClient
-import android.webkit.WebView
+import android.view.View
+import android.webkit.*
 import android.widget.Toast
 import java.net.URL
 
@@ -46,6 +44,12 @@ class MainActivity : AppCompatActivity() {
         wv.settings.javaScriptEnabled = true
         wv.settings.domStorageEnabled = true
 
+        if (AppConfig.config["showWebViewOnLcwReady"] ?: error("")) {
+            wv.visibility = View.GONE // Hide WebView on init until 'lcw:ready' event is triggered
+        }
+
+        wv.webViewClient = LocalAssetsWebViewClient()
+
         // Load local .html with baseUrl set to LCW production domain since attachment downloads does not work cross-origin
         val queryParams = "orgId=${OmnichannelConfig.config["orgId"]}&orgUrl=${OmnichannelConfig.config["orgUrl"]}&appId=${OmnichannelConfig.config["appId"]}&hideChatbutton=${OmnichannelConfig.config["hideChatbutton"]}&renderMobile=${OmnichannelConfig.config["renderMobile"]}&src=${OmnichannelConfig.config["src"]}"
         var url = URL(OmnichannelConfig.config["src"])
@@ -57,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         wv.loadDataWithBaseURL(baseUrl, data, "text/html", null, baseUrl)
 
         // Expose Android methods to Javascript layer
-        val javascriptInterface = JavascriptInterface(applicationContext)
+        val javascriptInterface = JavascriptInterface(applicationContext, wv)
         wv.addJavascriptInterface(javascriptInterface, "Android")
 
         // Subscribe to notification when a file from Web content needs to be downloaded in Android layer
