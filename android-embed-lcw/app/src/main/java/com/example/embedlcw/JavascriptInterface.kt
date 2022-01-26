@@ -2,6 +2,8 @@ package com.example.embedlcw
 
 import android.content.Context
 import android.os.Environment
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -33,9 +35,17 @@ class JavascriptInterface {
     fun onLcwReady() {
         Log.i("JavascriptInterface", "onLcwReady");
 
-        // Run on UI thread
-        wv.post {
-            wv.visibility = View.VISIBLE
+        if (AppConfig.config["showWebViewOnLcwReady"] ?: error("")) {
+            wv.post { // Run on UI thread
+                wv.visibility = View.VISIBLE // Display WebView on 'lcw:ready' event
+
+                // Remove spinner
+                val fragmentActivity = context as FragmentActivity
+                val fragment = fragmentActivity.supportFragmentManager.findFragmentById(R.id.spinner_fragment)
+                if (fragment != null) {
+                    fragmentActivity.supportFragmentManager.beginTransaction().remove(fragment).commit()
+                }
+            }
         }
     }
 

@@ -46,6 +46,12 @@ class MainActivity : AppCompatActivity() {
 
         if (AppConfig.config["showWebViewOnLcwReady"] ?: error("")) {
             wv.visibility = View.GONE // Hide WebView on init until 'lcw:ready' event is triggered
+
+            // Display spinner while loading LCW in the background
+            this.supportFragmentManager.beginTransaction().replace(
+                R.id.spinner_fragment,
+                SpinnerFragment()
+            ).commit()
         }
 
         wv.webViewClient = LocalAssetsWebViewClient()
@@ -61,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         wv.loadDataWithBaseURL(baseUrl, data, "text/html", null, baseUrl)
 
         // Expose Android methods to Javascript layer
-        val javascriptInterface = JavascriptInterface(applicationContext, wv)
+        val javascriptInterface = JavascriptInterface(this, wv)
         wv.addJavascriptInterface(javascriptInterface, "Android")
 
         // Subscribe to notification when a file from Web content needs to be downloaded in Android layer
