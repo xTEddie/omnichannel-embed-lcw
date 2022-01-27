@@ -2,4 +2,5 @@
     <string name="app_name">EmbedLCW</string>
     <string name="web_view">WebView</string>
     <string name="spinner_fragment">SpinnerFragment</string>
+    <string name="chat_button_fragment">ChatButtonFragment</string>
 </resources>
