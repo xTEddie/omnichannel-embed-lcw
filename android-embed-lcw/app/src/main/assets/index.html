@@ -52,6 +52,7 @@
         <div id='elapsed-time'></div>
         <section id='actions'>
             <button id='inspect-resources-button'> Inspect Resources </button>
+            <button id='download-logs-button'> Download Logs </button>
         </section>
         <div id='inspect-resources-results'></div>
         <div id='debug-info'></div>
@@ -73,7 +74,9 @@
 <!--        console.log(omnichannelConfig);-->
 
 		const states = {
-			ready: false
+			ready: false,
+			lcwLoadTime: 0,
+			networkLogs: []
 		}
 
         const loadInternetSpeedTest = () => {
@@ -113,6 +116,8 @@
                     const currentTime = new Date().getTime();
                     const elapsedTime = currentTime - startTime;
                     document.querySelector("div#elapsed-time").innerHTML = `Your chat widget loaded in ${elapsedTime / 1000} second(s)`;
+
+                    states.lcwLoadTime = elapsedTime;
 
                     // Stop timer on chat widget loaded
                     if (!states.ready) {
@@ -193,6 +198,8 @@
                     totalDuration += duration;
 				}
 
+                states.networkLogs.push(logs);
+
                 console.log("[NETWORK LOGS]");
 				console.log(JSON.stringify(logs));
                 console.log(`[WebResources][Duration] ${totalDuration} ms`);
@@ -213,8 +220,17 @@
 			inspectResourcesResultsElement.style.overflow = 'scroll';
 		}
 
-		document.getElementById('inspect-resources-button').onclick = inspectResources;
+        const downloadLogs = () => {
+            console.log("[downloadLogs]");
+            const logs = {
+                networkLogs: states.networkLogs,
+                lcwLoadTime: states.lcwLoadTime
+            };
+            Android.downloadLogs(JSON.stringify(logs));
+        }
 
+		document.getElementById('inspect-resources-button').onclick = inspectResources;
+        document.getElementById('download-logs-button').onclick = downloadLogs;
 		(async () => {
 		    await loadInternetSpeedTest();
             await loadChatWidget();

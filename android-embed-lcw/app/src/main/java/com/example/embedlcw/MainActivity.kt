@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             ).commit()
         }
 
-        wv.webViewClient = LocalAssetsWebViewClient()
+        wv.webViewClient = LocalAssetsWebViewClient(wv)
 
         // Load local .html with baseUrl set to LCW production domain since attachment downloads does not work cross-origin
         val queryParams = "orgId=${OmnichannelConfig.config["orgId"]}&orgUrl=${OmnichannelConfig.config["orgUrl"]}&appId=${OmnichannelConfig.config["appId"]}&hideChatbutton=${OmnichannelConfig.config["hideChatbutton"]}&renderMobile=${OmnichannelConfig.config["renderMobile"]}&src=${OmnichannelConfig.config["src"]}"

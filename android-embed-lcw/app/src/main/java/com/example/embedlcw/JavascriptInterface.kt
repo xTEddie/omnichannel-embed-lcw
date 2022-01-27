@@ -2,7 +2,6 @@ package com.example.embedlcw
 
 import android.content.Context
 import android.os.Environment
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.util.Base64
 import android.util.Log
@@ -12,6 +11,7 @@ import android.webkit.WebView
 import android.widget.Toast
 import java.io.File
 import java.io.FileOutputStream
+
 
 // References:
 // - https://stackoverflow.com/questions/48892390/download-blob-file-from-website-inside-android-webviewclient/48954970#48954970
@@ -49,6 +49,26 @@ class JavascriptInterface {
         }
     }
 
+    @JavascriptInterface
+    fun downloadLogs(data: String) {
+        Log.i("JavascriptInterface/downloadLogs", "$data");
+
+        val fileName = "EmbedLCW - Logs - ${System.currentTimeMillis()}.txt"
+        val logsFile = File(
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+            fileName
+        )
+
+        Log.i("JavascriptInterface/downloadLogs", "Download Path: ${logsFile.absolutePath}")
+
+        val stream = FileOutputStream(logsFile)
+        stream.use { stream ->
+            stream.write(data.toByteArray())
+        }
+
+        Toast.makeText(context, "Logs downloaded successfully: ${logsFile.absolutePath}", Toast.LENGTH_LONG).show()
+    }
+
     /**
      * Handler to process Base64 data.
      *
@@ -66,7 +86,7 @@ class JavascriptInterface {
 
         if (base64Data.startsWith("data:image/png;base64,")) {
             fileName = "foo.png"
-            bytes = base64Data.replaceFirst("data:image/png;base64,","")
+            bytes = base64Data.replaceFirst("data:image/png;base64,", "")
         }
 
         if (fileName.isNotEmpty() && bytes.isNotEmpty()) {
