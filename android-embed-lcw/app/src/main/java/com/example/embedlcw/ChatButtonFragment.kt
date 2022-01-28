@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
+import android.widget.Button
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,6 +37,17 @@ class ChatButtonFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat_button, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val wv = activity?.findViewById<WebView>(R.id.web_view)
+
+        val chatButton = view.findViewById<Button>(R.id.chat_button_id)
+        chatButton.setOnClickListener {
+            wv?.visibility = View.VISIBLE
+            chatButton.visibility = View.GONE
+        }
     }
 
     companion object {

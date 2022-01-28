@@ -34,17 +34,35 @@ class JavascriptInterface {
     @JavascriptInterface
     fun onLcwReady() {
         Log.i("JavascriptInterface", "onLcwReady");
+        val fragmentActivity = context as FragmentActivity
 
-        if (AppConfig.config["showWebViewOnLcwReady"] ?: error("")) {
-            wv.post { // Run on UI thread
-                wv.visibility = View.VISIBLE // Display WebView on 'lcw:ready' event
-
-                // Remove spinner
-                val fragmentActivity = context as FragmentActivity
-                val fragment = fragmentActivity.supportFragmentManager.findFragmentById(R.id.spinner_fragment)
-                if (fragment != null) {
-                    fragmentActivity.supportFragmentManager.beginTransaction().remove(fragment).commit()
+        if (AppConfig.config["showWebViewOnLcwReady"] == true) {
+            if (AppConfig.config["useNativeChatButton"] == true) {
+                wv.post { // Run on UI thread
+                    // Display chat button
+                    fragmentActivity.supportFragmentManager.beginTransaction().replace(
+                        R.id.chat_button_fragment,
+                        ChatButtonFragment.newInstance("", "")
+                    ).commit()
                 }
+            } else {
+                wv.post { // Run on UI thread
+                    wv.visibility = View.VISIBLE
+
+                    // Remove chat button if any
+                    val chatButtonFragment = fragmentActivity.supportFragmentManager.findFragmentById(R.id.chat_button_fragment)
+                    if (chatButtonFragment != null) {
+                        fragmentActivity.supportFragmentManager.beginTransaction().remove(chatButtonFragment).commit()
+                    }
+                }
+            }
+        }
+
+        wv.post { // Run on UI thread
+            // Remove spinner if any
+            val spinnerFragment = fragmentActivity.supportFragmentManager.findFragmentById(R.id.spinner_fragment)
+            if (spinnerFragment != null) {
+                fragmentActivity.supportFragmentManager.beginTransaction().remove(spinnerFragment).commit()
             }
         }
     }

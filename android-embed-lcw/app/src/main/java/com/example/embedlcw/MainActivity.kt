@@ -44,9 +44,9 @@ class MainActivity : AppCompatActivity() {
         wv.settings.javaScriptEnabled = true
         wv.settings.domStorageEnabled = true
 
-        if (AppConfig.config["showWebViewOnLcwReady"] ?: error("")) {
-            wv.visibility = View.GONE // Hide WebView on init until 'lcw:ready' event is triggered
+        wv.visibility = View.GONE // Hidden by default
 
+        if (AppConfig.config["showWebViewOnLcwReady"] == true) {
             // Display spinner while loading LCW in the background
             this.supportFragmentManager.beginTransaction().replace(
                 R.id.spinner_fragment,
@@ -54,11 +54,26 @@ class MainActivity : AppCompatActivity() {
             ).commit()
         }
 
-        if (AppConfig.config["useNativeChatButton"] ?: error("")) {
-            this.supportFragmentManager.beginTransaction().replace(
-                R.id.chat_button_fragment,
-                ChatButtonFragment.newInstance("foo", "bar")
-            ).commit()
+        if (AppConfig.config["useNativeChatButton"] == false) {
+            wv.visibility = View.VISIBLE
+
+            if (AppConfig.config["showWebViewOnLcwReady"] == true) {
+                wv.visibility = View.GONE // Hide WebView on init until 'lcw:ready' event is triggered
+
+                // Display spinner while loading LCW in the background
+                this.supportFragmentManager.beginTransaction().replace(
+                    R.id.spinner_fragment,
+                    SpinnerFragment()
+                ).commit()
+            }
+        } else {
+            if (AppConfig.config["showWebViewOnLcwReady"] == false) {
+                // Display chat button
+                this.supportFragmentManager.beginTransaction().replace(
+                    R.id.chat_button_fragment,
+                    ChatButtonFragment.newInstance("", "")
+                ).commit()
+            }
         }
 
         wv.webViewClient = LocalAssetsWebViewClient(wv)
