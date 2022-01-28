@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
         wv.settings.domStorageEnabled = true
 
         wv.visibility = View.GONE // Hidden by default
+        var shouldStartChatOnLcwReady = false;
 
         if (AppConfig.config["showWebViewOnLcwReady"] == true) {
             // Display spinner while loading LCW in the background
@@ -56,9 +57,11 @@ class MainActivity : AppCompatActivity() {
 
         if (AppConfig.config["useNativeChatButton"] == false) {
             wv.visibility = View.VISIBLE
+            shouldStartChatOnLcwReady = true
 
             if (AppConfig.config["showWebViewOnLcwReady"] == true) {
                 wv.visibility = View.GONE // Hide WebView on init until 'lcw:ready' event is triggered
+                shouldStartChatOnLcwReady = false
 
                 // Display spinner while loading LCW in the background
                 this.supportFragmentManager.beginTransaction().replace(
@@ -75,6 +78,8 @@ class MainActivity : AppCompatActivity() {
                 ).commit()
             }
         }
+
+        Store.shouldStartChatOnLcwReady = shouldStartChatOnLcwReady
 
         wv.webViewClient = LocalAssetsWebViewClient(wv)
 

@@ -5,6 +5,7 @@ class AppConfig {
         val config = mapOf(
             "showWebViewOnLcwReady" to false, // Wait for lcw:ready before loading the full application
             "useNativeChatButton" to false, // Use chat button to launch web view
+            "startChatOnLcwReady" to false, // Start chat as soon as web view & chat widget are fully loaded
         )
     }
 }

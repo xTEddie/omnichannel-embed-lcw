@@ -36,6 +36,7 @@ class JavascriptInterface {
         Log.i("JavascriptInterface", "onLcwReady");
         val fragmentActivity = context as FragmentActivity
 
+        var shouldStartChatOnLcwReady = false
         if (AppConfig.config["showWebViewOnLcwReady"] == true) {
             if (AppConfig.config["useNativeChatButton"] == true) {
                 wv.post { // Run on UI thread
@@ -48,6 +49,7 @@ class JavascriptInterface {
             } else {
                 wv.post { // Run on UI thread
                     wv.visibility = View.VISIBLE
+                    shouldStartChatOnLcwReady = true
 
                     // Remove chat button if any
                     val chatButtonFragment = fragmentActivity.supportFragmentManager.findFragmentById(R.id.chat_button_fragment)
@@ -59,10 +61,19 @@ class JavascriptInterface {
         }
 
         wv.post { // Run on UI thread
+            Store.shouldStartChatOnLcwReady = shouldStartChatOnLcwReady
+
             // Remove spinner if any
             val spinnerFragment = fragmentActivity.supportFragmentManager.findFragmentById(R.id.spinner_fragment)
             if (spinnerFragment != null) {
                 fragmentActivity.supportFragmentManager.beginTransaction().remove(spinnerFragment).commit()
+            }
+
+            if (AppConfig.config["startChatOnLcwReady"] == true && Store.shouldStartChatOnLcwReady) {
+                val script = "javascript: (() => {" +
+                        "Microsoft.Omnichannel.LiveChatWidget.SDK.startChat();" +
+                        "}) ();"
+                wv.evaluateJavascript(script, null)
             }
         }
     }

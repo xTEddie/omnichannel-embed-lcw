@@ -45,6 +45,13 @@ class ChatButtonFragment : Fragment() {
 
         val chatButton = view.findViewById<Button>(R.id.chat_button_id)
         chatButton.setOnClickListener {
+            if (AppConfig.config["startChatOnLcwReady"] == true) {
+                val script = "javascript: (() => {" +
+                        "Microsoft.Omnichannel.LiveChatWidget.SDK.startChat();" +
+                        "}) ();"
+                wv?.evaluateJavascript(script, null)
+            }
+
             wv?.visibility = View.VISIBLE
             chatButton.visibility = View.GONE
         }
